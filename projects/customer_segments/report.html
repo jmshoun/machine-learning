@@ -12065,9 +12065,9 @@ div#notebook {
 <p><strong>Answer:</strong></p>
 <p>We can attempt to categorize the type of establishment represented by each of the sample observations:</p>
 <ul>
-<li>Sample 0 is a relatively small establishment that buys mostly fresh and frozen items, but also some deli and grocery items. This could be a small cafe or similar establishment that serves prepared foods.</li>
-<li>Sample 1 is an establishment that purchases quite a lot of grovery and detergent/paper items, along with some fresh and milk items. This could very well be a consumer retail establishment like a grocery store.</li>
-<li>Sample 2 is an establishment that purchases an enormous amount of fresh and frozen items, and relatively little of every other category. This could be a large restaurant or cafeteria.</li>
+<li>Sample 0 is a relatively small establishment. It buys more than the median amount of Frozen and Delicatessen items, and less than the median amount of every other category. On an absolute basis, the category it purchases the most of is Fresh. This could be a small cafe or similar establishment that serves prepared foods.</li>
+<li>Sample 1 is an larger establishment that purchases more than the median amount of every category of item, and is in the top quartile for purchases of Milk, Groceries, Detergent/Paper, and Delicatessen items. This could very well be a consumer retail establishment like a grocery store.</li>
+<li>Sample 2 is an establishment that top-quartile amounts of Fresh and Frozen items, slightly-above median amounts of Grocery items, and below-median amounts of every other category. This could be a high-volume foodservice establishment such a cafeteria or large restaurant.</li>
 </ul>
 
 </div>
@@ -12177,7 +12177,8 @@ Boosted Scores:
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
-<p>Rather than focusing on one arbitrary feature, I tried predicting each feature in turn with all of the other features. The reported prediction scores ranged from  a high of 0.675 for Grocery to a low of -11.556 for Delicatessen. Replacing a simple decision tree with a more sophisticated regression model improved the prediction score for all attributes, but the score for Delicatessen was still negative.</p>
+<p>The code above generates $R^2$ scores for every feature on the basis of all the other features, but let's narrow our focus onto one particular feature. The $R^2$ score of the decision tree model predicting Grocery spending on the basis of all other features 0.675; a more sophisticated model is able to improve this figure to 0.850. This implies that this feature is not necessary to predict spending habits, <em>in the narrow sense that removing this feature from the model would likely not have a hugely detrimental impact on the model's performance</em>. It could well be that a model only Grocery spending as a predictor could perform reasonably well, and latent variable underlying Grocery and the features it's correlated with could be very important. However, given the presence of every other variable in the model, the marginal additional information provided by Grocery spending is extremely small.</p>
+<p>We can extend this analysis to each of the other features in the data set. The reported prediction scores ranged from  a high of 0.675 for Grocery to a low of -11.556 for Delicatessen. Replacing a simple decision tree with a more sophisticated regression model improved the prediction score for all attributes, but the score for Delicatessen was still negative.</p>
 <p>This implies that all features are correlated with each other to some extent, with the exception of Delicatessen. Each of these features may be important for clustering spending habits, but this suggests that Deli contains some information that can't be obtained via other features.</p>
 
 </div>
@@ -14849,7 +14850,7 @@ MzMzMzMzs7b8P6YbhZeIVDkmAAAAAElFTkSuQmCC
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
-<p>There are several pairs of features that have some degree of correlation, but the strongest correlation is between the Grocery and Detergent/Paper categories. This is pretty unsurprising, since these are the two features that were best predicted by the other features.</p>
+<p>There are several pairs of features that have some degree of correlation, but the strongest correlation is between the Grocery and Detergent/Paper categories. In the context of the previous question, this is unsurprising, as a strong relationship between Grocery and at least one other feature is strongly implied by the resuls of our supervised model. This means that Grocery and Detergent/Paper are quite probably two measures of the same latent structure, and dropping one would do very little to diminish model performance, since the other would contain essentially the same information.</p>
 <p>The distribution of each of the predictors is nowhere near normal and strongly right-skewed. This is extremely common in financial data such as this. This implies that a log transform (or other power transformation) could go a long way toward normalizing the data.</p>
 
 </div>
@@ -20613,6 +20614,11 @@ Once you have performed this implementation, the dataset will be stored in the v
 <span class="k">print</span> <span class="s2">&quot;Summary of Outliers by Number of Times Flagged:&quot;</span>
 <span class="k">print</span> <span class="n">outlier_count_summary</span>
 
+<span class="k">print</span> <span class="s2">&quot;Summary of Outliers Flagged Twice:&quot;</span>
+<span class="k">print</span> <span class="p">[</span><span class="n">o</span> <span class="k">for</span> <span class="n">o</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">outlier_counts</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">2</span><span class="p">]</span>
+<span class="k">print</span> <span class="s2">&quot;Summary of Outliers Flagged Three Times:&quot;</span>
+<span class="k">print</span> <span class="p">[</span><span class="n">o</span> <span class="k">for</span> <span class="n">o</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">outlier_counts</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">3</span><span class="p">]</span>
+
 <span class="c1"># Ok, it looks like 37 out of 42 unique outliers are identified on the basis of</span>
 <span class="c1"># only one variable. I now have no qualms about removing outliers.</span>
 <span class="n">outliers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">outliers</span><span class="p">))</span>
@@ -20637,6 +20643,10 @@ Once you have performed this implementation, the dataset will be stored in the v
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Summary of Outliers by Number of Times Flagged:
 [0, 37, 4, 1, 0, 0, 0]
+Summary of Outliers Flagged Twice:
+[128, 65, 66, 75]
+Summary of Outliers Flagged Three Times:
+[154]
 
 List of Outliers:
 [38, 57, 65, 66, 75, 81, 86, 95, 96, 98, 109, 128, 137, 142, 145, 154, 161, 171, 175, 183, 184, 187, 193, 203, 218, 233, 264, 285, 289, 304, 305, 325, 338, 343, 353, 355, 356, 357, 412, 420, 429, 439]
@@ -20667,7 +20677,8 @@ Number of Outliers:
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
-<p>Only five of the 440 data points are considerd outliers on the basis of more than one feature -- four on the basis of two features, and one on the basis of three features. As discussed in the code comments above, there would be reason to be concerned if many observations were considered outliers on the basis of a large number of features. However, there does not seem to be cause for concern here.</p>
+<p>Only five of the 440 data points are considerd outliers on the basis of more than one feature -- four on the basis of two features, and one on the basis of three features. Observations 128, 65, 66, and 75 are flagged on the basis of two features; observation 154 is flagged on the basis of three features.</p>
+<p>As discussed in the code comments above, there would be reason to be concerned if many observations were considered outliers on the basis of a large number of features. However, there does not seem to be cause for concern here.</p>
 <p>We can slice this question another way: is the number of 2- and 3-feature outliers inconsistent with outlier status being determined independently for each feature? The following (admittedly obtuse) one-liner in R simulates the sampling distribution of the "Summary of Outliers by Number of Times Flagged" table above, given 48 uncorrelated outliers:</p>
 <p><code>set.seed(1729); apply(replicate(10000, table(factor(apply(matrix(sample(c(rep(1, 48), rep(0, 2592)), 2640), ncol=6), 1, sum), 0:6))), 1, function(x) quantile(x, c(0.01, 0.05, 0.5, 0.95, 0.99)))</code></p>
 <p>The result is:</p>
@@ -20724,14 +20735,16 @@ Number of Outliers:
 
 <span class="c1"># Get cumulative explained variance ratios</span>
 <span class="n">cumulative_explained_variance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">)</span>
-<span class="k">print</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cumulative explained variance by component:&quot;</span>
+<span class="k">print</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cumulative explained variance by components:&quot;</span>
 <span class="k">print</span> <span class="n">cumulative_explained_variance</span>
+<span class="k">print</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
 
 <span class="c1"># Transform log_samples using the PCA fit above</span>
 <span class="n">pca_samples</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">log_samples</span><span class="p">)</span>
 
 <span class="c1"># Generate PCA results plot</span>
 <span class="n">pca_results</span> <span class="o">=</span> <span class="n">vs</span><span class="o">.</span><span class="n">pca_results</span><span class="p">(</span><span class="n">good_data</span><span class="p">,</span> <span class="n">pca</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">pca_results</span>
 </pre></div>
 
 </div>
@@ -20745,8 +20758,26 @@ Number of Outliers:
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>
-Cumulative explained variance by component:
+Cumulative explained variance by components:
 [ 0.49930484  0.7252529   0.83013599  0.92795361  0.9767447   1.        ]
+
+
+
+             Explained Variance   Fresh    Milk  Grocery  Frozen  \
+Dimension 1              0.4993 -0.0976  0.4109   0.4511 -0.1280   
+Dimension 2              0.2259  0.6008  0.1370   0.0852  0.6300   
+Dimension 3              0.1049  0.7452 -0.1544   0.0204 -0.2670   
+Dimension 4              0.0978 -0.2667 -0.1375  -0.0710  0.7133   
+Dimension 5              0.0488  0.0114  0.7083   0.3168  0.0671   
+Dimension 6              0.0233  0.0543  0.5177  -0.8267 -0.0471   
+
+             Detergents_Paper  Delicatessen  
+Dimension 1            0.7595        0.1579  
+Dimension 2           -0.0376        0.4634  
+Dimension 3            0.2349       -0.5422  
+Dimension 4            0.3157       -0.5445  
+Dimension 5           -0.4729       -0.4120  
+Dimension 6            0.2080        0.0094  
 </pre>
 </div>
 </div>
@@ -21365,10 +21396,10 @@ BFHSSEREREREREREgihpJCIiIiIiIiIiQf4PwPUhzfPLzyUAAAAASUVORK5CYII=
 <p>The first two principal components combined explain 75.3% of the variance in the data. The first four principal components combined explain 92.8% of the variance in the data.</p>
 <p>We can interpret the first four dimensions of the PCA as follows:</p>
 <ul>
-<li>The first dimension represents spending on Detergents/Paper, Grocery and Milk.</li>
-<li>The second dimension represents spending on the other three categories: Fresh, Frozen, and Delicatessen.</li>
-<li>The third dimension represents the ratio in spending between Fresh and Delicatessen products. (It's best interpreted as a ratio because it's a difference on the log scale.)</li>
-<li>The fourth dimension represents the ratio in spending between Frozen and Delicatessen products.</li>
+<li>The first dimension puts the most weight on Detergent/Paper spending, with significant positive weight on Milk and Grocery; the rest of the weights are negligible. This dimension represents spending on retail goods.</li>
+<li>The second dimension puts the most weight on Frozen, with Fresh and Delicatessen receiving nearly as much weight; the rest of the weights are negligible. This dimension represents spending on goods that may be purchased by restauarants for use in their kitchens.</li>
+<li>The third dimension puts a lot of positive weight on Fresh products and a significant amount of negative weight on Delicatessen products; the weights on the other product categories are significantly smaller. This dimension can be interpreted as the ratio in spending between Fresh and Delicatessen products. (It's best interpreted as a ratio because it's a difference on the log scale.)</li>
+<li>The fourth dimension puts a lot of positive weight on Frozen products and a significant amount of negative weight on Delicatessen products; the weights on the other product categories are much smaller. Similar to the third dimension, this can be interpreted as the ratio in spending between Frozen and Delicatessen products.</li>
 </ul>
 
 </div>
@@ -21588,7 +21619,7 @@ BFHSSEREREREREREgihpJCIiIiIiIiIiQf4PwPUhzfPLzyUAAAAASUVORK5CYII=
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fb6be05a710&gt;</pre>
+<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fd04d02c790&gt;</pre>
 </div>
 
 </div>
@@ -24920,8 +24951,8 @@ gg==
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
-<p>With its emphsais on Milk, Grocery, and Detergents/Paper products, Segment 0 seems to represent stores, groceries, or other retail establishments.</p>
-<p>By contrast, with its relative emphasis on Fresh and Frozen products, Segment 1 seems to represent foodservice indsutry establishments such as restaurants.</p>
+<p>The centroid of Segment 0 has roughly third-quartile-level spending in Milk, Grocery, and Detergents/Paper products, with below-median spending in Fresh and Frozen, and slightly above median spending in Delicatessen. On the basis of this relative product mix, Segment 0 seems to represent stores, groceries, or other retail establishments.</p>
+<p>By contrast, the centroid of Segment 1 has above-median spending on Fresh and Frozen products, below-median spending on Delicatessen product, and roughly first-quartile spending on the remaining three categories. Given its relative emphasis on Fresh and Frozen products, this segment seems to represent foodservice indsutry establishments such as restaurants.</p>
 
 </div>
 </div>
@@ -24974,7 +25005,8 @@ Sample point 2 predicted to be in Cluster 1
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
-<p>Based on both qualitative and quantitative considerations, I would place sample points 0 and 2 in cluster 1, and sample point 1 in cluster 0. Happily, these are exactly the results that the clustering model predictions provide.</p>
+<p>Based on the description of each of the clusters in the previous section, I feel confident in placing sample point 2 in cluster 1, at it has far above average spending on Fresh and Frozen items. Similarly, I would place sample point 0 in cluster 1, as the onyl category it buys more-than-median quantities of is Frozen items. Finally, I would place sample point 1 in cluster 0; evern though it purchases above-median quantities in every categories, it spends the most on Milk, Grocery, and Detergent/Paper.</p>
+<p>The clustering model assigns each of the sample points to the clusters I argued for in the paragraph above, so my initial thoughts and the cluster model results are consistent.</p>
 
 </div>
 </div>

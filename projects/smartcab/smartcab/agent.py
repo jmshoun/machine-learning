@@ -60,7 +60,7 @@ class LearningAgent(Agent):
             maximum Q-value of all actions based on the 'state' the smartcab is in. """
 
         actions = self.Q[state]
-        maxQ = max(actions, key=actions.get)
+        maxQ = max(actions.itervalues())
 
         return maxQ 
 
@@ -92,11 +92,13 @@ class LearningAgent(Agent):
             if random.random() < self.epsilon:
                 action = random.choice(self.valid_actions)
             else:
-                action = self.get_maxQ(state)
+                maxQ = self.get_maxQ(state)
+                action_options = [action for action, Q in self.Q[state].iteritems() 
+                                  if Q == maxQ]
+                action = random.choice(action_options)
         else:
             action = random.choice(self.valid_actions)
         
- 
         return action
 
 
